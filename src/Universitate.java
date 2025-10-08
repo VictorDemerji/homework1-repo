@@ -26,66 +26,101 @@ class Student {
     }
 
     public void afisareRezultate() {
+        System.out.println("\n----- Rezultate finale -----");
         System.out.println("Student: " + nume + ", Varsta: " + getVarsta() + " ani");
         System.out.println("Specialitate: " + specialitate);
         double media = getMedia();
-        System.out.println("Media studentului este: " + String.format("%.2f", media));
-        if (media > 9) {
+        System.out.println("Media studentului este: " + media);
+        if (media >= 9) {
             System.out.println("Esti promovat!");
         } else {
             System.out.println("Nu ati trecut cu brio, incercati in semestrul urmator!");
         }
+        System.out.println("-----------------------------\n");
     }
 }
 
 public class Universitate {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        String raspunsProgram;
 
-        System.out.println("Intrare in program...");
-        System.out.print("Introducere facultate (Matematica / Informatica): ");
-        String facultate = scanner.nextLine();
-        System.out.println("A fost aleasa Facultatea " + facultate + ".");
+        System.out.println("=== Sistem de evidenta a studentilor ===");
 
-        System.out.print("Doriti sa introduceti studenti noi? (Da/Nu): ");
-        String raspuns = scanner.nextLine();
+        do {
+            String facultate;
+            while (true) {
+                System.out.print("Introduceti facultatea (Matematica / Informatica): ");
+                facultate = scanner.nextLine();
+                if (facultate.equalsIgnoreCase("Matematica") || facultate.equalsIgnoreCase("Informatica")) {
+                    System.out.println("A fost aleasa Facultatea " + facultate + ".");
+                    break;
+                } else {
+                    System.out.println("Eroare: Facultatea introdusa nu este valida! Alegeti doar Matematica sau Informatica.");
+                }
+            }
 
-        if (raspuns.equalsIgnoreCase("Nu")) {
-            System.out.println("Iesire din program...");
-            return;
+            System.out.print("Doriti sa introduceti studenti noi? (Da/Nu): ");
+            String raspuns = scanner.nextLine();
+            if (raspuns.equalsIgnoreCase("Nu")) {
+                System.out.println("Iesire din program...");
+                return;
+            }
+
+            System.out.print("Creati numele grupei noi: ");
+            String grupa = scanner.nextLine();
+            System.out.println("Introducerea studentilor grupei " + grupa);
+
+            System.out.print("Introduceti numele studentului: ");
+            String nume = scanner.nextLine();
+
+            System.out.print("Introduceti anul nasterii studentului: ");
+            int anulNasterii = scanner.nextInt();
+            scanner.nextLine();
+
+            System.out.println("Student: " + nume + ", Varsta: " + (Year.now().getValue() - anulNasterii) + " ani");
+
+            String specialitate;
+            while (true) {
+                System.out.print("Introduceti specialitate (Algebra / Geometrie / Calcul_Integral): ");
+                specialitate = scanner.nextLine();
+                if (specialitate.equalsIgnoreCase("Algebra") ||
+                        specialitate.equalsIgnoreCase("Geometrie") ||
+                        specialitate.equalsIgnoreCase("Calcul_Integral")) {
+                    System.out.println("A fost aleasa specialitatea " + specialitate + ".");
+                    break;
+                } else {
+                    System.out.println("Eroare: Specialitatea introdusa nu este valida! Alegeti doar dintre: Algebra / Geometrie / Calcul_Integral.");
+                }
+            }
+
+            double nota1 = citesteNota(scanner, "Introduceti nota test1: ");
+            double nota2 = citesteNota(scanner, "Introduceti nota test2: ");
+            double notaExamen = citesteNota(scanner, "Introduceti nota examen: ");
+
+            Student student = new Student(nume, anulNasterii, specialitate, nota1, nota2, notaExamen);
+            student.afisareRezultate();
+
+            System.out.print("Doriti sa introduceti alt student? (Da/Nu): ");
+            scanner.nextLine();
+            raspunsProgram = scanner.nextLine();
+
+        } while (raspunsProgram.equalsIgnoreCase("Da"));
+
+        System.out.println("Program incheiat. Multumim!");
+    }
+
+    public static double citesteNota(Scanner scanner, String mesaj) {
+        double nota;
+        while (true) {
+            System.out.print(mesaj);
+            nota = scanner.nextDouble();
+            if (nota >= 1 && nota <= 10) {
+                break;
+            } else {
+                System.out.println("Nota invalida! Introduceti o valoare intre 1 si 10.");
+            }
         }
-
-        System.out.print("Creati numele grupei noi: ");
-        String grupa = scanner.nextLine();
-        System.out.println("Introducerea studentilor grupei " + grupa);
-
-        System.out.print("Introduceti numele studentului 1: ");
-        String nume = scanner.nextLine();
-
-        System.out.print("Introduceti anul nasterii studentului: ");
-        int anulNasterii = scanner.nextInt();
-        scanner.nextLine(); // consumă newline
-
-        System.out.println("Student: " + nume + ", Varsta: " + (Year.now().getValue() - anulNasterii) + " ani");
-
-        System.out.print("Introduceti specialitate (Algebra/Geometrie/Calcul_Integral): ");
-        String specialitate = scanner.nextLine();
-        System.out.println("A fost aleasa specialitatea " + specialitate + ".");
-
-        System.out.print("Introduceti nota test1: ");
-        double nota1 = scanner.nextDouble();
-
-        System.out.print("Introduceti nota test2: ");
-        double nota2 = scanner.nextDouble();
-
-        System.out.print("Introduceti nota examen: ");
-        double notaExamen = scanner.nextDouble();
-
-        Student student = new Student(nume, anulNasterii, specialitate, nota1, nota2, notaExamen);
-
-        System.out.println("----- Rezultate finale -----");
-        student.afisareRezultate();
-
-        System.out.println("Iesire din program...");
+        return nota;
     }
 }
